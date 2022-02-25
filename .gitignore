@@ -1,0 +1,14 @@
+*.suo
+*.user
+.vs
+.idea
+.ionide
+*.ncrunchsolution*
+nCrunchTemp_*
+_NCrunch_*
+
+[Bb]in/
+[Oo]bj/
+
+paket.local
+paket-files
