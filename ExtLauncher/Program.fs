@@ -33,15 +33,25 @@ module private Helpers =
         |> Option.iter trigger
 
     let withLoader<'T> (worker: StatusContext -> 'T) =
-        AnsiConsole.Status().Start("Loading...", worker)
+        AnsiConsole.Status().Start("Indexing...", worker)
 
     let currentPath =
         Environment.CurrentDirectory
 
+    let findFolder () =
+        let rec find path =
+            if isNull path
+            then None
+            else
+                match Db.findFolder path with
+                | Some f -> Some f
+                | None   -> System.IO.Path.GetDirectoryName path |> find
+        find currentPath
+
 type PromptCommand () =
     inherit Command ()
     override _.Execute c =
-        Db.findFolder currentPath
+        findFolder ()
         |> Option.map (prompt >> fun () -> 0)
         |> Option.defaultWith notInitialized
 
@@ -73,11 +83,12 @@ type DeindexCommand () =
 type InfoCommand () =
     inherit Command ()
     override _.Execute _ =
-        match Db.findFolder currentPath with
+        match findFolder () with
         | None -> notInitialized ()
         | Some folder ->
+            prn $"[teal]Path:[/]\n  {folder.Id}"
             prn $"[teal]Pattern:[/]\n  {folder.Pattern}"
-            prn $"[teal]Files:[/]"
+            prn $"[teal]Indexed files:[/]"
             for file in folder.Files do
                 prn $"  {file.Name}"
             0
@@ -85,7 +96,7 @@ type InfoCommand () =
 type RefreshCommand () =
     inherit Command ()
     override _.Execute _ =
-        match Db.findFolder currentPath with
+        match findFolder () with
         | None -> notInitialized ()
         | Some folder ->
             fun _ ->
