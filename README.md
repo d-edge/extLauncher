@@ -10,7 +10,7 @@
 <!--
     <a href="https://www.nuget.org/packages/extLauncher/" title="nuget"><img src="https://img.shields.io/nuget/vpre/extLauncher" alt="version" /></a>
     <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
-    <a href="https://raw.githubusercontent.com/akhansari/extLauncher/main/LICENSE.md" title="license"><img src="https://img.shields.io/github/license/akhansari/extLauncher" alt="license" /></a>
+    <a href="./LICENSE.md" title="license"><img src="https://img.shields.io/github/license/akhansari/extLauncher" alt="license" /></a>
 </p>
 
 <br />
