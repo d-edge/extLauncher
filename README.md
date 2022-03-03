@@ -1,7 +1,7 @@
 <br />
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/akhansari/extLauncher/main/extLauncher.png" alt="extLauncher logo" height="140">
+    <img src="https://raw.githubusercontent.com/akhansari/extLauncher/main/logo.png" alt="extLauncher logo" height="140">
 </p>
 
 <p align="center">
