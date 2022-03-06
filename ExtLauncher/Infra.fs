@@ -5,7 +5,7 @@ open System
 module IO =
     open System.IO
 
-    let [<Literal>] AppName = "ext-launcher"
+    let [<Literal>] AppName = "extLauncher"
 
     let userPath =
         let path = Path.Combine(Environment.GetFolderPath Environment.SpecialFolder.ApplicationData, AppName)
@@ -31,6 +31,7 @@ module Db =
 
     let findFolder (path: string) =
         use db = newReadOnlyDb ()
+        let foo = db.GetCollection<Folder>().FindAll() |> List.ofSeq
         let doc = db.GetCollection<Folder>().Include(fun f -> f.Files).FindById path
         if box doc <> null then Some doc else None
 

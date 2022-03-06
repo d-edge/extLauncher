@@ -3,78 +3,114 @@
 open System
 open Spectre.Console
 
-let showCursor () = Console.CursorVisible <- true
-let hideCursor () = Console.CursorVisible <- false
-let setCursorPosition left top = Console.SetCursorPosition(left, top)
-let getCursorTop () = Console.CursorTop
-let clearLine () = String(' ', Console.BufferWidth - 1) |> printf "%s"
+type TerminalKey = ConsoleKey * char * ConsoleModifiers
 
-let clearUp cursorTop count =
+type ITerminal =
+    abstract member ShowCursor: unit -> unit
+    abstract member HideCursor: unit -> unit
+    abstract member ToggleCursorVisibility: unit -> unit
+    abstract member GetCursorPosition: unit -> int32 * int32
+    abstract member SetCursorPosition: int32 * int32 -> unit
+    abstract member ReadKey: unit -> TerminalKey
+    abstract member ReadLine: unit -> string
+    abstract member Write: string -> unit
+    abstract member WriteLine: string -> unit
+    abstract member ClearLine: unit -> unit
+
+let Terminal = { new ITerminal with
+    member _.ShowCursor () =
+        Console.CursorVisible <- true
+    member _.HideCursor () =
+        Console.CursorVisible <- false
+    member _.ToggleCursorVisibility () =
+        Console.CursorVisible <- not Console.CursorVisible
+    member _.GetCursorPosition () =
+        Console.CursorLeft, Console.CursorTop
+    member _.SetCursorPosition (left, top) =
+        Console.SetCursorPosition(
+            (if left < 0 then 0 else left),
+            (if top < 0 then 0 else top))
+    member _.ReadKey () =
+        let k = Console.ReadKey()
+        k.Key, k.KeyChar, k.Modifiers
+    member _.ReadLine () =
+        Console.ReadLine()
+    member _.Write str =
+        AnsiConsole.Markup str
+    member _.WriteLine str =
+        AnsiConsole.MarkupLine str
+    member this.ClearLine () =
+        String(' ', Console.BufferWidth - 1) |> this.Write
+    }
+
+let [<Literal>] NoMatch = "No items match your search."
+
+let clearUp (term: ITerminal) cursorTop count =
     for top = cursorTop to cursorTop + count do
-        setCursorPosition 0 top
-        clearLine ()
-    setCursorPosition 0 cursorTop
+        term.SetCursorPosition (0, top)
+        term.ClearLine ()
+    term.SetCursorPosition (0, cursorTop)
 
-let readKey () =
-    let consoleKey = Console.ReadKey true
-    (consoleKey.Key, consoleKey.KeyChar)
-
-let printNoMatch () =
-    printfn "No items match your search."
-
-let checkNoMatch (search: string -> 'T array) =
+let checkNoMatch (term: ITerminal) (search: string -> 'T array) =
     if search String.Empty |> Array.isEmpty then
-        printNoMatch ()
+        term.WriteLine NoMatch
         None
     else
         Some search
 
-let prompt<'T> maxChoices (search: string -> 'T array) =
+let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
 
-    for _ in 0..maxChoices do printfn "" // allocate buffer area
-    let cursorTop = getCursorTop () - maxChoices - 1
+    for _ in 0..maxChoices do term.WriteLine "" // allocate buffer area
+    let cursorTop =
+        let _, top = term.GetCursorPosition()
+        top - maxChoices - 1
 
     let search str =
         let choices = search str |> Array.truncate maxChoices
         (choices, str, 0)
 
     let print (choices: 'T array, str, pos) =
-        hideCursor ()
+        term.HideCursor ()
         let pos = max 0 (min (Array.length choices - 1) pos)
-        clearUp cursorTop maxChoices
-        printfn ""
+        clearUp term cursorTop maxChoices
+        term.WriteLine ""
         if Array.isEmpty choices then
-            printNoMatch ()
+            term.WriteLine NoMatch
         else
             choices
             |> Array.iteri (fun i choice ->
                 sprintf "[yellow]%s[/]%s"
                     (if i = pos then "> " else "  ")
                     (string choice)
-                |> AnsiConsole.MarkupLine)
-        setCursorPosition 0 cursorTop
-        AnsiConsole.Markup $"[teal]Search a file to launch:[/] %s{str}"
-        showCursor ()
+                |> term.WriteLine)
+        term.SetCursorPosition (0, cursorTop)
+        term.Write $"[teal]Search a file to launch:[/] %s{str}"
+        term.ShowCursor ()
         (choices, str, pos)
 
     let rec read (choices: 'T array, str, pos) =
-        match readKey () with
-        | ConsoleKey.Escape, _ ->
-            clearUp cursorTop maxChoices
+        match term.ReadKey () with
+        | ConsoleKey.Escape, _, ConsoleModifiers.Alt ->
+            None // no clear alternative
+        | ConsoleKey.Escape, _, _ ->
+            clearUp term cursorTop maxChoices
             None
-        | ConsoleKey.Enter, _ ->
+        | ConsoleKey.Enter, _, _ ->
             if Array.isEmpty choices
             then read (choices, str, pos)
-            else Some choices[pos]
-        | ConsoleKey.UpArrow, _ ->
+            else
+                clearUp term cursorTop maxChoices
+                term.WriteLine $"""Launching "{choices[pos]}"..."""
+                Some choices[pos]
+        | ConsoleKey.UpArrow, _, _ ->
             print (choices, str, pos - 1) |> read
-        | ConsoleKey.DownArrow, _ ->
+        | ConsoleKey.DownArrow, _, _ ->
             print (choices, str, pos + 1) |> read
-        | ConsoleKey.Backspace, _ ->
+        | ConsoleKey.Backspace, _, _ ->
             if str.Length = 0
             then read (choices, str, pos)
             else search str[..^1] |> print |> read
-        | _, key ->
+        | _, key, _ ->
             search $"{str}{key}" |> print |> read
 
     search String.Empty |> print |> read

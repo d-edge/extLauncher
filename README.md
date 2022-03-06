@@ -36,7 +36,7 @@ dotnet tool install extLauncher
 
 ```
 USAGE:
-    ext-launcher [OPTIONS]
+    extLauncher [OPTIONS]
 
 OPTIONS:
     -h, --help    Prints help information

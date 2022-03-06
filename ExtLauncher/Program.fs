@@ -29,7 +29,7 @@ module private Helpers =
     let prompt folder =
         folder
         |> App.makeSearcher
-        |> Console.prompt 10
+        |> Console.prompt Console.Terminal 10
         |> Option.iter trigger
 
     let withLoader<'T> (worker: StatusContext -> 'T) =
@@ -45,7 +45,8 @@ module private Helpers =
             else
                 match Db.findFolder path with
                 | Some f -> Some f
-                | None   -> System.IO.Path.GetDirectoryName path |> find
+                | None   ->
+                    find (System.IO.Path.GetDirectoryName path)
         find currentPath
 
 type PromptCommand () =

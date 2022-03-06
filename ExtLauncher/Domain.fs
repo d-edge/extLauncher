@@ -14,7 +14,7 @@ type File =
 
     override this.Equals other =
         match other with
-        | :? File as other -> this.Id = other.Name
+        | :? File as other -> this.Id = other.Id
         | _ -> ArgumentException() |> raise
 
     interface IComparable with
@@ -35,11 +35,15 @@ module File =
     let triggered file =
         { file with Triggered = file.Triggered + 1 }
 
-    let search files str =
-        if String.IsNullOrWhiteSpace str then files else
-        files
-        |> Array.filter (fun file ->
-            file.Name.Contains(str, StringComparison.OrdinalIgnoreCase))
+    let searchByName files name =
+        if String.IsNullOrWhiteSpace name then
+            files
+        else
+            files
+            |> Array.filter (fun file ->
+                if isNull file.Name
+                then false
+                else file.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
 
 [<CLIMutable>]
 type Folder =
@@ -47,4 +51,4 @@ type Folder =
       Pattern: string
       OpenWith: string array
       Files: File array }
-    override this.ToString() = $"[*.{this.Pattern}] {this.Id}"
+    override this.ToString() = $"{this.Pattern} -> {this.Id}"

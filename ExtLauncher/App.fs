@@ -24,4 +24,4 @@ let refresh loadFiles save delete folderPath pattern =
         None)
 
 let makeSearcher folder =
-    File.search folder.Files
+    File.searchByName folder.Files
