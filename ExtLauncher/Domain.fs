@@ -49,6 +49,16 @@ module File =
 type Folder =
     { Id: string
       Pattern: string
+      IsRegex: bool
       OpenWith: string array
       Files: File array }
-    override this.ToString() = $"{this.Pattern} -> {this.Id}"
+    override this.ToString() = $"%A{this.Pattern} -> {this.Id}"
+
+type Pattern =
+    | WildcardPattern of string
+    | RegexPattern of string
+
+module Pattern =
+    let value = function WildcardPattern p | RegexPattern p -> p
+    let isRegex = function WildcardPattern _ -> false | RegexPattern _ -> true
+    let from value isRegex = if isRegex then RegexPattern value else WildcardPattern value

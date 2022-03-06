@@ -15,6 +15,8 @@ type ITerminal =
     abstract member ReadLine: unit -> string
     abstract member Write: string -> unit
     abstract member WriteLine: string -> unit
+    abstract member Markup: string -> unit
+    abstract member MarkupLine: string -> unit
     abstract member ClearLine: unit -> unit
 
 let Terminal = { new ITerminal with
@@ -35,12 +37,12 @@ let Terminal = { new ITerminal with
         k.Key, k.KeyChar, k.Modifiers
     member _.ReadLine () =
         Console.ReadLine()
-    member _.Write str =
-        AnsiConsole.Markup str
-    member _.WriteLine str =
-        AnsiConsole.MarkupLine str
+    member _.Write str = AnsiConsole.Write str
+    member _.WriteLine str = AnsiConsole.WriteLine str
+    member _.Markup str = AnsiConsole.Markup str
+    member _.MarkupLine str = AnsiConsole.MarkupLine str
     member this.ClearLine () =
-        String(' ', Console.BufferWidth - 1) |> this.Write
+        String(' ', Console.BufferWidth - 1) |> this.Markup
     }
 
 let [<Literal>] NoMatch = "No items match your search."
@@ -53,7 +55,7 @@ let clearUp (term: ITerminal) cursorTop count =
 
 let checkNoMatch (term: ITerminal) (search: string -> 'T array) =
     if search String.Empty |> Array.isEmpty then
-        term.WriteLine NoMatch
+        term.MarkupLine NoMatch
         None
     else
         Some search
@@ -75,16 +77,16 @@ let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
         clearUp term cursorTop maxChoices
         term.WriteLine ""
         if Array.isEmpty choices then
-            term.WriteLine NoMatch
+            term.MarkupLine NoMatch
         else
             choices
             |> Array.iteri (fun i choice ->
                 sprintf "[yellow]%s[/]%s"
                     (if i = pos then "> " else "  ")
                     (string choice)
-                |> term.WriteLine)
+                |> term.MarkupLine)
         term.SetCursorPosition (0, cursorTop)
-        term.Write $"[teal]Search a file to launch:[/] %s{str}"
+        term.Markup $"[teal]Search a file to launch:[/] %s{str}"
         term.ShowCursor ()
         (choices, str, pos)
 
@@ -93,6 +95,7 @@ let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
         | ConsoleKey.Escape, _, ConsoleModifiers.Alt ->
             None // no clear alternative
         | ConsoleKey.Escape, _, _ ->
+            term.Write (string '\u200B') // hack to force the clear
             clearUp term cursorTop maxChoices
             None
         | ConsoleKey.Enter, _, _ ->

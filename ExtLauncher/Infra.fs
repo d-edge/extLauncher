@@ -4,6 +4,7 @@ open System
 
 module IO =
     open System.IO
+    open System.Text.RegularExpressions
 
     let [<Literal>] AppName = "extLauncher"
 
@@ -15,8 +16,18 @@ module IO =
     let userPathCombine path =
         Path.Combine(userPath, path)
 
-    let getFiles (folderPath: string) pattern =
-        Directory.EnumerateFiles(folderPath, pattern, SearchOption.AllDirectories)
+    let private enumerateFiles folderPath = function
+        | WildcardPattern pattern ->
+            Directory.EnumerateFiles(folderPath, pattern, SearchOption.AllDirectories)
+        | RegexPattern pattern ->
+            let regex = Regex pattern
+            let opt = EnumerationOptions()
+            opt.RecurseSubdirectories <- true
+            Directory.EnumerateFiles(folderPath, "*", opt)
+            |> Seq.filter (Path.GetFileName >> regex.IsMatch)
+
+    let getFiles folderPath pattern =
+        enumerateFiles folderPath pattern
         |> Seq.map (fun path -> path, Path.GetFileNameWithoutExtension path)
         |> Seq.toArray
 
@@ -31,22 +42,15 @@ module Db =
 
     let findFolder (path: string) =
         use db = newReadOnlyDb ()
-        let foo = db.GetCollection<Folder>().FindAll() |> List.ofSeq
         let doc = db.GetCollection<Folder>().Include(fun f -> f.Files).FindById path
         if box doc <> null then Some doc else None
-
-    let upsertFolder (folder: Folder) =
-        use db = newSharedDb ()
-        db.GetCollection<File>().Upsert folder.Files |> ignore
-        db.GetCollection<Folder>().Upsert folder |> ignore
-        folder
 
     let updateFile (file: File) =
         use db = newSharedDb ()
         db.GetCollection<File>().Update file |> ignore
         file
 
-    let deleteFolder (path: string) =
+    let deleteFolder path =
         match findFolder path with
         | None -> ()
         | Some folder ->
@@ -54,3 +58,10 @@ module Db =
             for file in folder.Files do
                 db.GetCollection<File>().Delete file.Id |> ignore
             db.GetCollection<Folder>().Delete folder.Id |> ignore
+
+    let upsertFolder (folder: Folder) =
+        deleteFolder folder.Id
+        use db = newSharedDb ()
+        db.GetCollection<File>().InsertBulk folder.Files |> ignore
+        db.GetCollection<Folder>().Insert folder |> ignore
+        folder

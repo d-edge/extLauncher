@@ -43,7 +43,7 @@ OPTIONS:
 
 COMMANDS:
     search             (Default) Type to search. Arrows Up/Down to navigate. Enter to launch the file
-    index <pattern>    Indexes all files recursively with a specific pattern
+    index <pattern>    Indexes all files recursively with a specific pattern which can be a wildcard (default) or a regular expression (--regex)
     deindex            Clears the current index
     info               Prints the current pattern and all the indexed files
     refresh            Updates the current index

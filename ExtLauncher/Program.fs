@@ -9,13 +9,13 @@ open Spectre.Console.Cli
 module private Helpers =
     open System.Diagnostics
 
-    let prn value = AnsiConsole.MarkupLine value
+    let markup value = AnsiConsole.MarkupLine value
 
     let notInitialized () =
-        prn "Folder not yet indexed."
-        prn $"  [yellow]{IO.AppName}[/] index [teal]<pattern>[/]"
-        prn "For more information:"
-        prn $"  [yellow]{IO.AppName}[/] --help"
+        printfn "Folder not yet indexed."
+        markup $"  [yellow]{IO.AppName}[/] index [teal]<pattern>[/]"
+        printfn "For more information:"
+        markup $"  [yellow]{IO.AppName}[/] --help"
         1
 
     let run (file: File) =
@@ -59,17 +59,27 @@ type PromptCommand () =
 type IndexSettings () =
     inherit CommandSettings ()
         [<CommandArgument(0, "<pattern>")>]
-        [<Description("The search string to match against the names of files. This parameter can contain a combination of valid literal path and wildcard (* and ?) characters, but it doesn't support regular expressions.")>]
+        [<Description "The search string to match against the file names.">]
         member val Pattern = "" with get, set
+        [<CommandOption "--regex">]
+        [<DefaultValue false>]
+        [<Description "If set then the pattern is a regular expression, otherwise it's a combination of valid literal path and wildcard (* and ?) characters.">]
+        member val IsRegex = false with get, set
 
 type IndexCommand () =
     inherit Command<IndexSettings> ()
     override _.Execute (_, settings) =
         fun _ ->
-            App.index IO.getFiles Db.upsertFolder currentPath settings.Pattern
+            Pattern.from settings.Pattern settings.IsRegex
+            |> App.index IO.getFiles Db.upsertFolder currentPath
         |> withLoader
-        |> Option.iter prompt
-        0
+        |> function
+            | Some folder ->
+                prompt folder
+                0
+            | None ->
+                Console.WriteLine Console.NoMatch
+                -1
 
 type DeindexCommand () =
     inherit Command ()
@@ -78,7 +88,7 @@ type DeindexCommand () =
         | None -> notInitialized ()
         | Some folder ->
             Db.deleteFolder folder.Id
-            prn "Deindexed"
+            printfn "Deindexed"
             0
 
 type InfoCommand () =
@@ -87,11 +97,11 @@ type InfoCommand () =
         match findFolder () with
         | None -> notInitialized ()
         | Some folder ->
-            prn $"[teal]Path:[/]\n  {folder.Id}"
-            prn $"[teal]Pattern:[/]\n  {folder.Pattern}"
-            prn $"[teal]Indexed files:[/]"
+            markup $"[teal]Path:[/]\n  {folder.Id.EscapeMarkup()}"
+            markup $"[teal]Pattern:[/]\n  {folder.Pattern.EscapeMarkup()}"
+            markup $"[teal]Indexed files:[/]"
             for file in folder.Files do
-                prn $"  {file.Name}"
+                printfn $"  {file.Name}"
             0
 
 type RefreshCommand () =
@@ -105,7 +115,8 @@ type RefreshCommand () =
                     IO.getFiles
                     Db.upsertFolder
                     Db.deleteFolder
-                    folder.Id folder.Pattern
+                    folder.Id
+                    (Pattern.from folder.Pattern folder.IsRegex)
             |> withLoader
             |> Option.iter prompt
             0
@@ -121,7 +132,7 @@ module Program =
             conf.AddCommand<PromptCommand>("search")
                 .WithDescription("(Default) Type to search. Arrows Up/Down to navigate. Enter to launch the file.") |> ignore
             conf.AddCommand<IndexCommand>("index")
-                .WithDescription("Indexes all files recursively with a specific pattern.") |> ignore
+                .WithDescription("Indexes all files recursively with a specific pattern which can be a wildcard (default) or a regular expression (--regex).") |> ignore
             conf.AddCommand<DeindexCommand>("deindex")
                 .WithDescription("Clears the current index.") |> ignore
             conf.AddCommand<InfoCommand>("info")

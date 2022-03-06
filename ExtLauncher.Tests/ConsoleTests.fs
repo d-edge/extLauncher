@@ -38,18 +38,21 @@ let Terminal
                 buffer.Add str
             top <- top + 1
             left <- 0
+        member this.Markup str = this.Write str
+        member this.MarkupLine str = this.WriteLine str
         member _.ClearLine() =
             buffer[top] <- String.Empty
             left <- 0
     }
 
 let newTerminal = Terminal (Queue())
-let enterKey = ConsoleKey.Enter, char ConsoleKey.Enter, enum<ConsoleModifiers> 0
-let downKey = ConsoleKey.DownArrow, char ConsoleKey.DownArrow, enum<ConsoleModifiers> 0
-let upKey = ConsoleKey.UpArrow, char ConsoleKey.UpArrow, enum<ConsoleModifiers> 0
-let backspaceKey = ConsoleKey.Backspace, char ConsoleKey.Backspace, enum<ConsoleModifiers> 0
+let noConsoleModifier = enum<ConsoleModifiers> 0
+let enterKey = ConsoleKey.Enter, char ConsoleKey.Enter, noConsoleModifier
+let downKey = ConsoleKey.DownArrow, char ConsoleKey.DownArrow, noConsoleModifier
+let upKey = ConsoleKey.UpArrow, char ConsoleKey.UpArrow, noConsoleModifier
+let backspaceKey = ConsoleKey.Backspace, char ConsoleKey.Backspace, noConsoleModifier
 let escapeKey = ConsoleKey.Escape, char ConsoleKey.Escape, ConsoleModifiers.Alt
-let aKey k = enum<ConsoleKey>(Char.ToUpper k |> int), k, enum<ConsoleModifiers> 0
+let aKey k = enum<ConsoleKey>(Char.ToUpper k |> int), k, noConsoleModifier
 let [<Literal>] SearchSentence = "[teal]Search a file to launch:[/] "
 
 let printedLines maxChoices itemsCount chosenNum = [
@@ -174,3 +177,15 @@ let ``prompt should print the search chars supporting backspace`` () =
         |> Console.prompt term 1
 
     Seq.head lines =! $"{SearchSentence}tst"
+
+[<Fact>]
+let ``prompt should clear when exit`` () =
+    let lines = ResizeArray()
+    let keyReader = Queue [ ConsoleKey.Escape, char ConsoleKey.Escape, noConsoleModifier ]
+    let term = newTerminal keyReader lines
+
+    let _ =
+        fun _ -> [| 1; 2; 3 |]
+        |> Console.prompt term 5
+
+    Seq.forall ((=) "") lines =! true

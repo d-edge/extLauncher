@@ -8,7 +8,8 @@ let loadFolder loadFiles folderPath pattern : Folder option =
     | [||] -> None
     | files ->
         { Id = folderPath
-          Pattern = pattern
+          Pattern = Pattern.value pattern
+          IsRegex = Pattern.isRegex pattern
           Files = files
           OpenWith = Array.empty }
         |> Some
