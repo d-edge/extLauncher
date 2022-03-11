@@ -1,28 +1,36 @@
 ﻿module ExtLauncher.App
 
-let loadFolder loadFiles folderPath pattern : Folder option =
-    loadFiles folderPath pattern
+type FolderConf =
+    { Path: string
+      Pattern: Pattern
+      Launchers: Launcher array }
+
+let loadFolder loadFiles conf : Folder option =
+    loadFiles conf.Path conf.Pattern
     |> Array.map ((<||) File.create)
     |> Array.sort
     |> function
     | [||] -> None
     | files ->
-        { Id = folderPath
-          Pattern = Pattern.value pattern
-          IsRegex = Pattern.isRegex pattern
-          Files = files
-          OpenWith = Array.empty }
+        { Id = conf.Path
+          Pattern = Pattern.value conf.Pattern
+          IsRegex = Pattern.isRegex conf.Pattern
+          Launchers = conf.Launchers
+          Files = files }
         |> Some
 
-let index loadFiles save folderPath pattern : Folder option =
-    loadFolder loadFiles folderPath pattern
+let index loadFiles save conf : Folder option =
+    loadFolder loadFiles conf
     |> Option.map save
 
-let refresh loadFiles save delete folderPath pattern =
-    index loadFiles save folderPath pattern
+let refresh loadFiles save delete folder =
+    { Path = folder.Id
+      Pattern = Pattern.from folder.Pattern folder.IsRegex
+      Launchers = folder.Launchers }
+    |> index loadFiles save
     |> Option.orElseWith (fun () ->
-        delete folderPath
+        delete folder.Id
         None)
 
 let makeSearcher folder =
-    File.searchByName folder.Files
+    Helpers.searchByName folder.Files

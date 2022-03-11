@@ -53,10 +53,11 @@ let upKey = ConsoleKey.UpArrow, char ConsoleKey.UpArrow, noConsoleModifier
 let backspaceKey = ConsoleKey.Backspace, char ConsoleKey.Backspace, noConsoleModifier
 let escapeKey = ConsoleKey.Escape, char ConsoleKey.Escape, ConsoleModifiers.Alt
 let aKey k = enum<ConsoleKey>(Char.ToUpper k |> int), k, noConsoleModifier
-let [<Literal>] SearchSentence = "[teal]Search a file to launch:[/] "
+let [<Literal>] PromptTitle = "Search and choose"
+let [<Literal>] PrintedTitle = "[teal]" + PromptTitle + "[/] "
 
 let printedLines maxChoices itemsCount chosenNum = [
-    SearchSentence
+    PrintedTitle
     for n in 1..itemsCount do
         $"""[yellow]{if n = chosenNum then ">" else " "} [/]{n}"""
     for _ in itemsCount+1..maxChoices do
@@ -71,7 +72,7 @@ let ``prompt should print choices`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     List.ofSeq lines =! printedLines 5 3 1
 
@@ -83,7 +84,7 @@ let ``prompt should go down`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     List.ofSeq lines =! printedLines 5 3 2
 
@@ -95,7 +96,7 @@ let ``prompt should go up`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     List.ofSeq lines =! printedLines 5 3 1
 
@@ -107,7 +108,7 @@ let ``prompt should stay up`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     List.ofSeq lines =! printedLines 5 3 1
 
@@ -119,7 +120,7 @@ let ``prompt should stay down`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     List.ofSeq lines =! printedLines 5 3 3
 
@@ -131,13 +132,10 @@ let ``prompt should choose the second choice and clear`` () =
 
     let chosen =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     chosen =! Some 2
-    List.ofSeq lines =! [
-        """Launching "2"..."""
-        ""; ""; ""; ""; ""
-    ]
+    Seq.forall ((=) "") lines =! true
 
 [<Fact>]
 let ``prompt should print error if no match`` () =
@@ -147,24 +145,24 @@ let ``prompt should print error if no match`` () =
 
     let _ =
         fun _ -> Array.empty
-        |> Console.prompt term 1
+        |> Console.prompt term PromptTitle 1
 
     List.ofSeq lines =! [
-        SearchSentence
+        PrintedTitle
         "No items match your search."
     ]
 
 [<Fact>]
-let ``prompt should print the search chars`` () =
+let ``prompt should print the search title`` () =
     let lines = ResizeArray()
     let keyReader = Queue [ aKey 't'; aKey 'e'; aKey 's'; aKey 't'; escapeKey ]
     let term = newTerminal keyReader lines
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 1
+        |> Console.prompt term PromptTitle 1
 
-    Seq.head lines =! $"{SearchSentence}test"
+    Seq.head lines =! $"{PrintedTitle}test"
 
 [<Fact>]
 let ``prompt should print the search chars supporting backspace`` () =
@@ -174,9 +172,9 @@ let ``prompt should print the search chars supporting backspace`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 1
+        |> Console.prompt term PromptTitle 1
 
-    Seq.head lines =! $"{SearchSentence}tst"
+    Seq.head lines =! $"{PrintedTitle}tst"
 
 [<Fact>]
 let ``prompt should clear when exit`` () =
@@ -186,6 +184,6 @@ let ``prompt should clear when exit`` () =
 
     let _ =
         fun _ -> [| 1; 2; 3 |]
-        |> Console.prompt term 5
+        |> Console.prompt term PromptTitle 5
 
     Seq.forall ((=) "") lines =! true

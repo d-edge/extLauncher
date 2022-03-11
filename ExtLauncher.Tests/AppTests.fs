@@ -10,7 +10,11 @@ let ``should load a folder`` () =
     let loadFiles _ _ =
         [| "/test/file2.ext", "file2"
            "/test/file1.ext", "file1" |]
-    let folder = App.loadFolder loadFiles folderPath (WildcardPattern pattern)
+    let folder =
+        App.loadFolder loadFiles
+            { Path = folderPath
+              Pattern = Pattern.from pattern false
+              Launchers = Array.empty }
     folder =! Some
         { Id = folderPath
           Pattern = pattern
@@ -18,10 +22,14 @@ let ``should load a folder`` () =
           Files =
             [| File.create "/test/file1.ext" "file1"
                File.create "/test/file2.ext" "file2" |]
-          OpenWith = Array.empty }
+          Launchers = Array.empty }
 
 [<Fact>]
 let ``should not load a folder if no result`` () =
     let loadFiles _ _ = Array.empty
-    let folder = App.loadFolder loadFiles "" (WildcardPattern "")
+    let folder =
+        App.loadFolder loadFiles
+            { Path = ""
+              Pattern = Pattern.from "" false
+              Launchers = Array.empty }
     folder =! None

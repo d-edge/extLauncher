@@ -38,12 +38,21 @@ dotnet tool install extLauncher
 USAGE:
     extLauncher [OPTIONS]
 
+EXAMPLES:
+    extLauncher index *.sln
+    extLauncher index "(.*)[.](fs|cs)proj$" --regex
+    extLauncher launcher notepad set notepad.exe
+    extLauncher launcher notepad remove
+    extLauncher launcher vscode set /usr/bin/code --choose file --args="-r %s"
+    extLauncher launcher vscode set "C:\Users\$env:Username\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd" --choose directory
+
 OPTIONS:
     -h, --help    Prints help information
 
 COMMANDS:
-    search             (Default) Type to search. Arrows Up/Down to navigate. Enter to launch the file
-    index <pattern>    Indexes all files recursively with a specific pattern which can be a wildcard (default) or a regular expression (--regex)
+    prompt             (default command) Type to search. Arrows Up/Down to navigate. Enter to launch. Escape to quit
+    index <pattern>    Indexes all files recursively with a specific pattern which can be a wildcard (default) or a regular expression
+    launcher <name>    Add, update or remove a launcher (optional)
     deindex            Clears the current index
     info               Prints the current pattern and all the indexed files
     refresh            Updates the current index

@@ -35,4 +35,4 @@ let ``File with the same trigger should be sorted alphabetically`` (file1: File)
 let ``searchByName should search for the containing string ignoring case`` (file: File) (files: File array) =
     let file = { file with Name = "Hello World" }
     let files = Array.insertAt 0 file files
-    File.searchByName files "world" =! [| file |]
+    Helpers.searchByName files "world" =! [| file |]

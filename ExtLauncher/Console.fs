@@ -42,7 +42,7 @@ let Terminal = { new ITerminal with
     member _.Markup str = AnsiConsole.Markup str
     member _.MarkupLine str = AnsiConsole.MarkupLine str
     member this.ClearLine () =
-        String(' ', Console.BufferWidth - 1) |> this.Markup
+        String(' ', Console.BufferWidth - 1) |> this.WriteLine
     }
 
 let [<Literal>] NoMatch = "No items match your search."
@@ -60,7 +60,7 @@ let checkNoMatch (term: ITerminal) (search: string -> 'T array) =
     else
         Some search
 
-let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
+let prompt<'T> (term: ITerminal) title maxChoices (search: string -> 'T array) =
 
     for _ in 0..maxChoices do term.WriteLine "" // allocate buffer area
     let cursorTop =
@@ -86,7 +86,7 @@ let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
                     (string choice)
                 |> term.MarkupLine)
         term.SetCursorPosition (0, cursorTop)
-        term.Markup $"[teal]Search a file to launch:[/] %s{str}"
+        term.Markup $"[teal]%s{title}[/] %s{str}"
         term.ShowCursor ()
         (choices, str, pos)
 
@@ -103,17 +103,16 @@ let prompt<'T> (term: ITerminal) maxChoices (search: string -> 'T array) =
             then read (choices, str, pos)
             else
                 clearUp term cursorTop maxChoices
-                term.WriteLine $"""Launching "{choices[pos]}"..."""
                 Some choices[pos]
         | ConsoleKey.UpArrow, _, _ ->
-            print (choices, str, pos - 1) |> read
+            read ((choices, str, pos - 1) |> print)
         | ConsoleKey.DownArrow, _, _ ->
-            print (choices, str, pos + 1) |> read
+            read ((choices, str, pos + 1) |> print)
         | ConsoleKey.Backspace, _, _ ->
             if str.Length = 0
             then read (choices, str, pos)
-            else search str[..^1] |> print |> read
+            else read (search str[..^1] |> print)
         | _, key, _ ->
-            search $"{str}{key}" |> print |> read
+            read (search $"{str}{key}" |> print)
 
     search String.Empty |> print |> read
