@@ -44,5 +44,6 @@ let refresh loadFiles save (folder: Folder) : Folder option =
     |> save
     |> Some
 
-let makeSearcher folder =
-    Helpers.searchByName folder.Files
+let makeSearcher folder str =
+    Helpers.searchByName folder.Files str
+    |> Array.sort

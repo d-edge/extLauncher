@@ -41,10 +41,11 @@ USAGE:
 EXAMPLES:
     extLauncher index *.sln
     extLauncher index "(.*)[.](fs|cs)proj$" --regex
-    extLauncher launcher notepad set notepad.exe
-    extLauncher launcher notepad remove
+    extLauncher launcher mylauncher set execpath
+    extLauncher launcher mylauncher remove
     extLauncher launcher vscode set /usr/bin/code --choose file --args="-r %s"
-    extLauncher launcher vscode set "C:\Users\$env:Username\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd" --choose directory
+    extLauncher launcher vscode set C:\Users\$env:Username\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd --choose directory
+    extLauncher launcher explorer set explorer.exe --choose directory
 
 OPTIONS:
     -h, --help    Prints help information
