@@ -220,7 +220,7 @@ type RefreshCommand () =
         | Some folder ->
             fun _ ->
                 folder
-                |> App.refresh IO.getFiles Db.upsertFolder Db.deleteFolder
+                |> App.refresh IO.getFiles Db.upsertFolder
             |> withLoader
             |> Option.iter prompt
             0
