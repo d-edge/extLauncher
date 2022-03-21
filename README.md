@@ -59,6 +59,12 @@ COMMANDS:
     refresh            Updates the current index
 ```
 
+# Build locally
+
+- Clone the repository
+- Open the repository
+- Invoke the tool by running the `dotnet tool run` command: `dotnet tool run extlauncher` (with your arguments)
+ 
 # License
 
 [MIT](./LICENSE.md)
