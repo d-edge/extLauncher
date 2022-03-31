@@ -1,4 +1,4 @@
-﻿module ExtLauncher.App
+﻿module extLauncher.App
 
 type FolderConf =
     { Path: string

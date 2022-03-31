@@ -1,4 +1,4 @@
-module ExtLauncher.DomainTests
+module extLauncher.DomainTests
 
 open System
 open FsCheck.Xunit

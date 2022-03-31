@@ -1,4 +1,4 @@
-﻿module ExtLauncher.AppTests
+﻿module extLauncher.AppTests
 
 open Swensen.Unquote
 open Xunit
