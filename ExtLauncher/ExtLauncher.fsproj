@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -9,6 +9,22 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>extLauncher</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
+  
+    <Copyright>Copyright 2022 D-EDGE</Copyright>
+    <Authors>D-EDGE and contributors</Authors>
+    
+      <!-- NuGet settings -->
+    <PackageId>extLauncher</PackageId>
+    <PackageTags>DEdge;launcher;extLauncher</PackageTags>
+    <PackageReleaseNotes>https://github.com/d-edge/extLauncher/releases/</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/d-edge/extLauncher</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>logo-64x64.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/d-edge/extLauncher</RepositoryUrl>
+  
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
