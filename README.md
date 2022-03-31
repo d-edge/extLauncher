@@ -1,16 +1,16 @@
 <br />
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/akhansari/extLauncher/main/logo.png" alt="extLauncher logo" height="140">
+    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/logo.png" alt="extLauncher logo" height="140">
 </p>
 
 <p align="center">
 <!--
-    <a href="https://github.com/akhansari/extLauncher/actions" title="actions"><img src="https://github.com/akhansari/akhansari/actions/workflows/build.yml/badge.svg?branch=main" alt="actions build" /></a>-->
+    <a href="https://github.com/d-edge/extLauncher/actions" title="actions"><img src="https://github.com/d-edge/d-edge/actions/workflows/build.yml/badge.svg?branch=main" alt="actions build" /></a>-->
 <!--
     <a href="https://www.nuget.org/packages/extLauncher/" title="nuget"><img src="https://img.shields.io/nuget/vpre/extLauncher" alt="version" /></a>
     <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
-    <a href="./LICENSE.md" title="license"><img src="https://img.shields.io/github/license/akhansari/extLauncher" alt="license" /></a>
+    <a href="./LICENSE.md" title="license"><img src="https://img.shields.io/github/license/d-edge/extLauncher" alt="license" /></a>
 </p>
 
 <br />
