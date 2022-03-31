@@ -1,4 +1,4 @@
-﻿module ExtLauncher.ConsoleTests
+﻿module extLauncher.ConsoleTests
 
 open System
 open System.Collections.Generic

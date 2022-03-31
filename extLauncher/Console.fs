@@ -1,4 +1,4 @@
-﻿module ExtLauncher.Console
+﻿module extLauncher.Console
 
 open System
 open Spectre.Console

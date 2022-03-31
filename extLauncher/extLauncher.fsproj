@@ -27,6 +27,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+
   <ItemGroup>
     <Compile Include="Domain.fs" />
     <Compile Include="App.fs" />
@@ -39,7 +40,7 @@
       <PackagePath>$(PackageIconUrl)</PackagePath>
     </None>
 
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>

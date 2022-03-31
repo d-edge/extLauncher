@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ExtLauncher\ExtLauncher.fsproj" />
+    <ProjectReference Include="..\extLauncher\extLauncher.fsproj" />
   </ItemGroup>
 
 </Project>

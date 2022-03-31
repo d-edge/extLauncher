@@ -15,7 +15,7 @@
 
 <br />
 
-ExtLauncher is a dotnet tool to search and launch quickly projects in the user's preferred application. ExtLauncher is maintained by folks at [D-EDGE](https://www.d-edge.com/).
+extLauncher is a dotnet tool to search and launch quickly projects in the user's preferred application. extLauncher is maintained by folks at [D-EDGE](https://www.d-edge.com/).
 
 # Getting Started
 

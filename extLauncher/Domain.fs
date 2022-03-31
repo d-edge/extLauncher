@@ -1,4 +1,4 @@
-﻿namespace ExtLauncher
+﻿namespace extLauncher
 
 open System
 
