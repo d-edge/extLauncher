@@ -2,7 +2,7 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "extlauncher": {
+    "extLauncher": {
       "version": "1.0.0",
       "commands": [
         "extLauncher"
