@@ -32,28 +32,40 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.100
-      - name: Tool restore
-        run: dotnet tool restore
       - name: Restore
         run: dotnet restore
-      - name: Clean
-        run: dotnet clean ./extLauncher.sln -c Release && dotnet nuget locals all --clear
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
         run: dotnet test -c Release
+      - name: Strip HTML from README
+        uses: d-edge/strip-markdown-html@v0.1
+        with:
+          input-path: README.md
+          output-path: $PROJECT_NAME/README.md
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
-        run: dotnet pack -v normal -c Release --no-restore -p:PackageVersion=$GITHUB_RUN_ID.0.0 $PROJECT_NAME/$PROJECT_NAME.fsproj -o bin/nuget
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            arrTag=(${GITHUB_REF//\// })
+            VERSION="${arrTag[2]}"
+            echo Version: $VERSION
+            VERSION="${VERSION//v}"
+            echo Clean Version: $VERSION
+          else
+            VERSION=$GITHUB_RUN_ID
+            echo Non-release version: $VERSION
+          fi
+          dotnet pack -v normal -c Release --no-restore --include-symbols --include-source -p:PackageVersion=$VERSION src/$PROJECT_NAME/$PROJECT_NAME.*proj
       - name: Upload Artifact
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v2
         with:
           name: nupkg
-          path: ./bin/nuget/*.nupkg
+          path: ./${{ env.PROJECT_NAME }}/bin/Release/*.nupkg
   prerelease:
     needs: build
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifact
@@ -76,15 +88,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.100
-      - name: Create Release NuGet package
-        run: |
-          arrTag=(${GITHUB_REF//\// })
-          VERSION="${arrTag[2]}"
-          echo Version: $VERSION
-          VERSION="${VERSION//v}"
-          echo Clean Version: $VERSION
-          dotnet tool restore
-          dotnet pack -v normal -c Release -p:PackageVersion=$VERSION -o nupkg $PROJECT_NAME/$PROJECT_NAME.fsproj
+      - name: Download Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: nupkg
       - name: Push to GitHub Feed
         run: |
           for f in ./nupkg/*.nupkg
