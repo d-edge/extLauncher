@@ -36,6 +36,8 @@ jobs:
         run: dotnet tool restore
       - name: Restore
         run: dotnet restore
+      - name: Clean
+        run: dotnet clean ./extLauncher.sln -c Release && dotnet nuget locals all --clear
       - name: Build
         run: dotnet build -c Release --no-restore
       - name: Test
