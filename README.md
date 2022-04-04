@@ -10,7 +10,7 @@
 <!--
     <a href="https://www.nuget.org/packages/extLauncher/" title="nuget"><img src="https://img.shields.io/nuget/vpre/extLauncher" alt="version" /></a>
     <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
-    <a href="./LICENSE.md" title="license"><img src="https://img.shields.io/github/license/d-edge/extLauncher" alt="license" /></a>
+    <a href="https://github.com/d-edge/extLauncher/blob/main/LICENSE" title="license"><img src="https://img.shields.io/github/license/d-edge/extLauncher" alt="license" /></a>
 </p>
 
 <br />
@@ -74,4 +74,4 @@ This tool maintains a database to improve its performance. You should be able to
 
 # License
 
-[MIT](./LICENSE.md)
+[MIT](https://github.com/d-edge/extLauncher/blob/main/LICENSE)
