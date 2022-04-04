@@ -14,7 +14,7 @@
     <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/assets/terminal.gif" alt="extLauncher terminal" height="500">
+    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/assets/terminal.gif" alt="extLauncher terminal">
 </p>
 
 <br />

@@ -35,7 +35,7 @@
     <Compile Include="Infra.fs" />
     <Compile Include="Program.fs" />
 
-    <None Include="../logo-64x64.png">
+    <None Include="../assets/logo-64x64.png">
       <Pack>true</Pack>
       <PackagePath>$(PackageIconUrl)</PackagePath>
     </None>
