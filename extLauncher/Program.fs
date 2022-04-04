@@ -261,7 +261,7 @@ module Program =
             conf.AddExample([| "launcher"; "mylauncher"; "set"; "execpath" |])
             conf.AddExample([| "launcher"; "mylauncher"; "remove" |])
             conf.AddExample([| "launcher"; "vscode"; "set"; "/usr/bin/code"; "--choose"; "file"; "--args=\"-r %s\"" |])
-            conf.AddExample([| "launcher"; "vscode"; "set"; @"C:\Users\$env:Username\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd"; "--choose"; "directory" |])
+            conf.AddExample([| "launcher"; "vscode"; "set"; @"""$env:LOCALAPPDATA\Programs\Microsoft VS Code\bin\code.cmd"""; "--choose"; "directory" |])
             conf.AddExample([| "launcher"; "explorer"; "set"; "explorer.exe"; "--choose"; "directory" |])
 
             #if DEBUG

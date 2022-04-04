@@ -1,7 +1,7 @@
 <br />
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/logo.png" alt="extLauncher logo" height="140">
+    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/assets/logo.png" alt="extLauncher logo" height="140">
 </p>
 
 <p align="center">
@@ -12,6 +12,10 @@
 <!--
     <a href="https://www.nuget.org/packages/extLauncher/" title="nuget"><img src="https://img.shields.io/nuget/vpre/extLauncher" alt="version" /></a>
     <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
+
+<p align="center">
+    <img src="https://raw.githubusercontent.com/d-edge/extLauncher/main/assets/terminal.gif" alt="extLauncher terminal" height="500">
+</p>
 
 <br />
 
@@ -44,7 +48,7 @@ EXAMPLES:
     extLauncher launcher mylauncher set execpath
     extLauncher launcher mylauncher remove
     extLauncher launcher vscode set /usr/bin/code --choose file --args="-r %s"
-    extLauncher launcher vscode set C:\Users\$env:Username\AppData\Local\Programs\Microsoft VS Code\bin\code.cmd --choose directory
+    extLauncher launcher vscode set "$env:LOCALAPPDATA\Programs\Microsoft VS Code\bin\code.cmd" --choose directory
     extLauncher launcher explorer set explorer.exe --choose directory
 
 OPTIONS:
