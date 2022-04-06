@@ -39,10 +39,9 @@ jobs:
       - name: Test
         run: dotnet test -c Release
       - name: Strip HTML from README
-        uses: d-edge/strip-markdown-html@v0.1
+        uses: d-edge/strip-markdown-html@v0.2
         with:
           input-path: README.md
-          output-path: $PROJECT_NAME/README.md
       - name: Pack
         if: matrix.os == 'ubuntu-latest'
         run: |
