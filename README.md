@@ -9,10 +9,6 @@
 <a href="https://github.com/d-edge/extLauncher/blob/main/LICENSE" title="license"><img src="https://img.shields.io/github/license/d-edge/extLauncher" alt="license" /></a>
 </p>
 
-<!--
-    <a href="https://www.nuget.org/packages/extLauncher/" title="nuget"><img src="https://img.shields.io/nuget/vpre/extLauncher" alt="version" /></a>
-    <a href="https://www.nuget.org/stats/packages/extLauncher?groupby=Version" title="stats"><img src="https://img.shields.io/nuget/dt/extLauncher" alt="download" /></a> -->
-
 <br />
 
 extLauncher is a dotnet tool to search and launch quickly projects in the user's preferred application. extLauncher is maintained by folks at [D-EDGE](https://www.d-edge.com/).
