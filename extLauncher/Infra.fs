@@ -18,12 +18,10 @@ module IO =
 
     let private enumerateFiles folderPath = function
         | WildcardPattern pattern ->
-            Directory.EnumerateFiles(folderPath, pattern, SearchOption.AllDirectories)
+            Directory.EnumerateFiles(folderPath, pattern, EnumerationOptions(RecurseSubdirectories = true, IgnoreInaccessible = true, MatchType = MatchType.Simple))
         | RegexPattern pattern ->
             let regex = Regex pattern
-            let opt = EnumerationOptions()
-            opt.RecurseSubdirectories <- true
-            Directory.EnumerateFiles(folderPath, "*", opt)
+            Directory.EnumerateFiles(folderPath, "*", EnumerationOptions(RecurseSubdirectories = true, IgnoreInaccessible = true, MatchType = MatchType.Simple))
             |> Seq.filter (Path.GetFileName >> regex.IsMatch)
 
     let getFiles folderPath pattern =
