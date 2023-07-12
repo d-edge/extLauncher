@@ -13,11 +13,11 @@ module private Implementations =
     let markup value = AnsiConsole.MarkupLine value
 
     let notInitialized () =
-        markup $"Folder not yet indexed: [yellow]{IO.AppName}[/] index [gray]--help[/]"
+        markup $"Folder not yet indexed: [yellow]%s{IO.AppName}[/] index [gray]--help[/]"
         1
 
     let run (file: File) launcher =
-        markup $"""Launching [green]{file.Name}[/]..."""
+        markup $"""Launching [green]%s{file.Name}[/]..."""
         let file = file |> File.triggered |> Db.updateFile
         match launcher with
         | None ->
@@ -68,7 +68,7 @@ module private Implementations =
         find currentPath
 
     let toCount str num =
-        if num > 1 then $"{num} {str}s" else $"{num} {str}"
+        if num > 1 then $"%i{num} %s{str}s" else $"%i{num} %s{str}"
 
     let noNull s = if isNull s then "" else s
 
@@ -106,12 +106,12 @@ type IndexCommand () =
         |> withLoader
         |> function
             | Some folder ->
-                printfn $"""{toCount "file" folder.Files.Length} indexed."""
-                markup $"Start to search and launch: [yellow]{IO.AppName}[/]"
-                markup $"Add a specific launcher: [yellow]{IO.AppName}[/] launcher [gray]--help[/]"
+                printfn $"""%s{toCount "file" folder.Files.Length} indexed."""
+                markup $"Start to search and launch: [yellow]%s{IO.AppName}[/]"
+                markup $"Add a specific launcher: [yellow]%s{IO.AppName}[/] launcher [gray]--help[/]"
                 0
             | None ->
-                printfn $"{Console.NoMatch}"
+                printfn $"%s{Console.NoMatch}"
                 -1
 
 type LauncherSettings () =
@@ -141,7 +141,7 @@ type SetLauncherCommand () =
         match findFolder () with
         | None -> notInitialized ()
         | Some folder ->
-            markup $"[teal]{settings.Name}[/] launcher updated."
+            markup $"[teal]%s{settings.Name}[/] launcher updated."
             { Name = settings.Name
               Path = settings.Path
               Arguments = settings.Arguments
@@ -166,13 +166,13 @@ type RemoveLauncherCommand () =
         | Some folder ->
             match folder.Launchers |> Array.tryFindIndex (fun l -> l.Name = settings.Name) with
             | Some index ->
-                markup $"[green]{settings.Name}[/] launcher removed."
+                markup $"[green]%s{settings.Name}[/] launcher removed."
                 { folder with Launchers = Array.removeAt index folder.Launchers }
                 |> Db.upsertFolder
                 |> printLaunchers
                 0
             | None ->
-                markup $"[green]{settings.Name}[/] launcher not found."
+                markup $"[green]%s{settings.Name}[/] launcher not found."
                 printLaunchers folder
                 0
     interface ICommandLimiter<LauncherSettings>
@@ -193,16 +193,16 @@ type InfoCommand () =
         match findFolder () with
         | None -> notInitialized ()
         | Some folder ->
-            markup $"[teal]Path:[/]\n  {folder.Id.EscapeMarkup()}"
+            markup $"[teal]Path:[/]\n  %s{folder.Id.EscapeMarkup()}"
 
-            markup $"\n[teal]Pattern:[/]\n  {folder.Pattern.EscapeMarkup()}"
+            markup $"\n[teal]Pattern:[/]\n  %s{folder.Pattern.EscapeMarkup()}"
 
-            markup $"\n[teal]Launchers:[/]"
+            markup "\n[teal]Launchers:[/]"
             if Array.isEmpty folder.Launchers
             then printfn "  -\n"
             else printLaunchers folder
 
-            markup $"[teal]Indexed files:[/]"
+            markup "[teal]Indexed files:[/]"
             let files = Table().AddColumns([| "Name"; "Triggered"; "Path" |])
             files.Border <- TableBorder.Minimal
             for f in folder.Files do

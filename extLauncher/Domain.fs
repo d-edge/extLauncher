@@ -50,7 +50,7 @@ module Launcher =
     let buildArgs launcher tolaunch =
         if String.IsNullOrEmpty launcher.Arguments
         then tolaunch
-        else launcher.Arguments.Replace("%s", $"\"{tolaunch}\"")
+        else launcher.Arguments.Replace("%s", $"\"%s{tolaunch}\"")
 
 // Should be serializable to BSON
 [<CLIMutable>]

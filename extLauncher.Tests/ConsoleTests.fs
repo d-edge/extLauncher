@@ -59,7 +59,7 @@ let [<Literal>] PrintedTitle = "[teal]" + PromptTitle + "[/] "
 let printedLines maxChoices itemsCount chosenNum = [
     PrintedTitle
     for n in 1..itemsCount do
-        $"""[yellow]{if n = chosenNum then ">" else " "} [/]{n}"""
+        $"""[yellow]%s{if n = chosenNum then ">" else " "} [/]{n}"""
     for _ in itemsCount+1..maxChoices do
         ""
     ]
@@ -162,7 +162,7 @@ let ``prompt should print the search title`` () =
         fun _ -> [| 1; 2; 3 |]
         |> Console.prompt term PromptTitle 1
 
-    Seq.head lines =! $"{PrintedTitle}test"
+    Seq.head lines =! $"%s{PrintedTitle}test"
 
 [<Fact>]
 let ``prompt should print the search chars supporting backspace`` () =
@@ -174,7 +174,7 @@ let ``prompt should print the search chars supporting backspace`` () =
         fun _ -> [| 1; 2; 3 |]
         |> Console.prompt term PromptTitle 1
 
-    Seq.head lines =! $"{PrintedTitle}tst"
+    Seq.head lines =! $"%s{PrintedTitle}tst"
 
 [<Fact>]
 let ``prompt should clear when exit`` () =

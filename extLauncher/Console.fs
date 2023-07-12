@@ -113,6 +113,6 @@ let prompt<'T> (term: ITerminal) title maxChoices (search: string -> 'T array) =
             then read (choices, str, pos)
             else read (search str[..^1] |> print)
         | _, key, _ ->
-            read (search $"{str}{key}" |> print)
+            read (search $"%s{str}%c{key}" |> print)
 
     search String.Empty |> print |> read

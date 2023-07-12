@@ -34,7 +34,7 @@ module Db =
 
     BsonMapper.Global.Entity<Folder>().DbRef(fun f -> f.Files) |> ignore
 
-    let dbPath = IO.userPathCombine $"{IO.AppName}.db"
+    let dbPath = IO.userPathCombine $"%s{IO.AppName}.db"
     let newReadOnlyDb () = new LiteDatabase($"Filename=%s{dbPath}; Mode=ReadOnly")
     let newSharedDb () = new LiteDatabase($"Filename=%s{dbPath}; Mode=Shared")
 
