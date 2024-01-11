@@ -1,18 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
     <LangVersion>preview</LangVersion>
     <UseAppHost>true</UseAppHost>
-
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>extLauncher</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
-
     <Copyright>Copyright (c) 2022 D-EDGE</Copyright>
     <Authors>Amin Khansari</Authors>
-
     <!-- NuGet settings -->
     <PackageId>extLauncher</PackageId>
     <PackageTags>DEdge;launcher;extLauncher</PackageTags>
@@ -23,29 +20,22 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/d-edge/extLauncher</RepositoryUrl>
-
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <WarningsAsErrors>FS0025</WarningsAsErrors>
+    <AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-
-
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Domain.fs" />
     <Compile Include="App.fs" />
     <Compile Include="Console.fs" />
     <Compile Include="Infra.fs" />
     <Compile Include="Program.fs" />
-
     <None Include="../assets/logo-64x64.png">
       <Pack>true</Pack>
       <PackagePath>$(PackageIconUrl)</PackagePath>
     </None>
-
-    <None Include="../README.md" Pack="true" PackagePath="\"/>
+    <None Include="../README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="LiteDB" Version="5.0.16" />
-    <PackageReference Include="Spectre.Console" Version="0.44.0" />
-  </ItemGroup>
-
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

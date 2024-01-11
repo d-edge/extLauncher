@@ -81,7 +81,11 @@ let ``prompt should print choices`` () =
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     List.ofSeq lines =! printedLines 5 3 1
@@ -89,11 +93,21 @@ let ``prompt should print choices`` () =
 [<Fact>]
 let ``prompt should go down`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ downKey; escapeKey ]
+
+    let keyReader =
+        Queue [
+            downKey
+            escapeKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     List.ofSeq lines =! printedLines 5 3 2
@@ -101,11 +115,22 @@ let ``prompt should go down`` () =
 [<Fact>]
 let ``prompt should go up`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ downKey; upKey; escapeKey ]
+
+    let keyReader =
+        Queue [
+            downKey
+            upKey
+            escapeKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     List.ofSeq lines =! printedLines 5 3 1
@@ -113,11 +138,22 @@ let ``prompt should go up`` () =
 [<Fact>]
 let ``prompt should stay up`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ upKey; upKey; escapeKey ]
+
+    let keyReader =
+        Queue [
+            upKey
+            upKey
+            escapeKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     List.ofSeq lines =! printedLines 5 3 1
@@ -125,11 +161,25 @@ let ``prompt should stay up`` () =
 [<Fact>]
 let ``prompt should stay down`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ downKey; downKey; downKey; downKey; downKey; escapeKey ]
+
+    let keyReader =
+        Queue [
+            downKey
+            downKey
+            downKey
+            downKey
+            downKey
+            escapeKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     List.ofSeq lines =! printedLines 5 3 3
@@ -137,11 +187,21 @@ let ``prompt should stay down`` () =
 [<Fact>]
 let ``prompt should choose the second choice and clear`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ downKey; enterKey ]
+
+    let keyReader =
+        Queue [
+            downKey
+            enterKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let chosen =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     chosen =! Some 2
@@ -157,16 +217,33 @@ let ``prompt should print error if no match`` () =
         fun _ -> Array.empty
         |> Console.prompt term PromptTitle (sprintf "%i") 1
 
-    List.ofSeq lines =! [ PrintedTitle; "No items match your search." ]
+    List.ofSeq lines
+    =! [
+        PrintedTitle
+        "No items match your search."
+    ]
 
 [<Fact>]
 let ``prompt should print the search title`` () =
     let lines = ResizeArray()
-    let keyReader = Queue [ aKey 't'; aKey 'e'; aKey 's'; aKey 't'; escapeKey ]
+
+    let keyReader =
+        Queue [
+            aKey 't'
+            aKey 'e'
+            aKey 's'
+            aKey 't'
+            escapeKey
+        ]
+
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 1
 
     Seq.head lines =! $"%s{PrintedTitle}test"
@@ -176,12 +253,23 @@ let ``prompt should print the search chars supporting backspace`` () =
     let lines = ResizeArray()
 
     let keyReader =
-        Queue [ aKey 't'; aKey 'e'; backspaceKey; aKey 's'; aKey 't'; escapeKey ]
+        Queue [
+            aKey 't'
+            aKey 'e'
+            backspaceKey
+            aKey 's'
+            aKey 't'
+            escapeKey
+        ]
 
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 1
 
     Seq.head lines =! $"%s{PrintedTitle}tst"
@@ -196,7 +284,11 @@ let ``prompt should clear when exit`` () =
     let term = newTerminal keyReader lines
 
     let _ =
-        fun _ -> [| 1; 2; 3 |]
+        fun _ -> [|
+            1
+            2
+            3
+        |]
         |> Console.prompt term PromptTitle (sprintf "%i") 5
 
     Seq.forall ((=) "") lines =! true

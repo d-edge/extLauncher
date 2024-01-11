@@ -47,9 +47,9 @@ module private Implementations =
                 | Some launcher -> run file (Some launcher)
                 | None -> ()
 
-    let filePrompt (file: File): string =
+    let filePrompt (file: File) : string =
         $"""[white]%s{file.Name.value}[/]  [gray](%s{file.Path.folder.value})[/]"""
-    
+
     let prompt folder =
         folder
         |> App.makeSearcher
@@ -81,11 +81,28 @@ module private Implementations =
     let noNull s = if isNull s then "" else s
 
     let printLaunchers folder =
-        let launchers = Table().AddColumns([| "Name"; "Choose"; "Path"; "Arguments" |])
+        let launchers =
+            Table()
+                .AddColumns(
+                    [|
+                        "Name"
+                        "Choose"
+                        "Path"
+                        "Arguments"
+                    |]
+                )
+
         launchers.Border <- TableBorder.Minimal
 
         for l in folder.Launchers do
-            launchers.AddRow([| l.Name; string l.Choose; l.Path.value; noNull l.Arguments |])
+            launchers.AddRow(
+                [|
+                    l.Name
+                    string l.Choose
+                    l.Path.value
+                    noNull l.Arguments
+                |]
+            )
             |> ignore
 
         AnsiConsole.Write launchers
@@ -175,10 +192,7 @@ type SetLauncherCommand() =
                 | Some index ->
                     folder.Launchers.[index] <- launcher
                     folder
-                | None -> {
-                    folder with
-                        Launchers = Array.insertAt 0 launcher folder.Launchers
-                  }
+                | None -> { folder with Launchers = Array.insertAt 0 launcher folder.Launchers }
             |> Db.upsertFolder
             |> printLaunchers
 
@@ -197,10 +211,7 @@ type RemoveLauncherCommand() =
             | Some index ->
                 markup $"[green]%s{settings.Name}[/] launcher removed."
 
-                {
-                    folder with
-                        Launchers = Array.removeAt index folder.Launchers
-                }
+                { folder with Launchers = Array.removeAt index folder.Launchers }
                 |> Db.upsertFolder
                 |> printLaunchers
 
@@ -242,12 +253,30 @@ type InfoCommand() =
                 printLaunchers folder
 
             markup "[teal]Indexed files:[/]"
-            let files = Table().AddColumns([| "Name"; "Triggered"; "Path" |])
+
+            let files =
+                Table()
+                    .AddColumns(
+                        [|
+                            "Name"
+                            "Triggered"
+                            "Path"
+                        |]
+                    )
+
             files.Border <- TableBorder.Minimal
 
             for f in folder.Files do
                 let path = f.Path.value.Remove(0, folder.Path.value.Length)
-                files.AddRow([| f.Name.value; string f.Triggered; path |]) |> ignore
+
+                files.AddRow(
+                    [|
+                        f.Name.value
+                        string f.Triggered
+                        path
+                    |]
+                )
+                |> ignore
 
             AnsiConsole.Write files
 
@@ -321,10 +350,37 @@ module Program =
                 .WithDescription("Updates the current index.")
             |> ignore
 
-            conf.AddExample([| "index"; "*.sln" |])
-            conf.AddExample([| "index"; "\"(.*)[.](fs|cs)proj$\""; "--regex" |])
-            conf.AddExample([| "launcher"; "mylauncher"; "set"; "execpath" |])
-            conf.AddExample([| "launcher"; "mylauncher"; "remove" |])
+            conf.AddExample(
+                [|
+                    "index"
+                    "*.sln"
+                |]
+            )
+
+            conf.AddExample(
+                [|
+                    "index"
+                    "\"(.*)[.](fs|cs)proj$\""
+                    "--regex"
+                |]
+            )
+
+            conf.AddExample(
+                [|
+                    "launcher"
+                    "mylauncher"
+                    "set"
+                    "execpath"
+                |]
+            )
+
+            conf.AddExample(
+                [|
+                    "launcher"
+                    "mylauncher"
+                    "remove"
+                |]
+            )
 
             conf.AddExample(
                 [|
@@ -349,7 +405,16 @@ module Program =
                 |]
             )
 
-            conf.AddExample([| "launcher"; "explorer"; "set"; "explorer.exe"; "--choose"; "directory" |])
+            conf.AddExample(
+                [|
+                    "launcher"
+                    "explorer"
+                    "set"
+                    "explorer.exe"
+                    "--choose"
+                    "directory"
+                |]
+            )
 
 #if DEBUG
             conf.ValidateExamples() |> ignore

@@ -22,7 +22,7 @@ type FilePath =
     member this.value =
         match this with
         | FilePath v -> v
-        
+
     member this.folder =
         match this with
         | FilePath v -> v |> System.IO.Path.GetDirectoryName |> FolderPath
@@ -61,11 +61,8 @@ module File =
         Triggered = 0
     }
 
-    let triggered file = {
-        file with
-            Triggered = file.Triggered + 1
-    }
-    
+    let triggered file = { file with Triggered = file.Triggered + 1 }
+
 type Choose =
     | File = 0
     | Directory = 1

@@ -47,7 +47,11 @@ let ``should not load a folder if no result`` () =
 [<Fact>]
 let ``refresh should synchronize files`` () =
     let newFolder =
-        let loadFiles _ _ = [| FilePath "file1", FileName ""; FilePath "file3", FileName "" |]
+        let loadFiles _ _ = [|
+            FilePath "file1", FileName ""
+            FilePath "file3", FileName ""
+        |]
+
         let save = id
 
         {
@@ -68,7 +72,11 @@ let ``refresh should synchronize files`` () =
 [<Fact>]
 let ``refresh should keep triggers`` () =
     let newFolder =
-        let loadFiles _ _ = [| FilePath "file1", FileName ""; FilePath "file2", FileName "" |]
+        let loadFiles _ _ = [|
+            FilePath "file1", FileName ""
+            FilePath "file2", FileName ""
+        |]
+
         let save = id
 
         {
