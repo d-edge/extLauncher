@@ -2,10 +2,16 @@
   "version": 1,
   "isRoot": true,
   "tools": {
-    "extLauncher": {
-      "version": "1.0.0",
+    "fantomas": {
+      "version": "6.2.3",
       "commands": [
-        "extLauncher"
+        "fantomas"
+      ]
+    },
+    "paket": {
+      "version": "8.0.0",
+      "commands": [
+        "paket"
       ]
     }
   }
