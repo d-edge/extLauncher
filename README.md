@@ -75,3 +75,5 @@ This tool maintains a database to improve its performance. You should be able to
 # License
 
 [MIT](https://github.com/d-edge/extLauncher/blob/main/LICENSE)
+
+Validation 7f8ab509-cdd1-4b11-a043-2be2500a3a39
